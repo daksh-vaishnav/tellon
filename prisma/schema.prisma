@@ -15,6 +15,7 @@ datasource db {
 
 model User {
   id               Int               @id @default(autoincrement())
+  role             UserRole          @default(USER)
   username         String            @unique
   email            String            @unique
   password         String
@@ -89,7 +90,6 @@ model Trade {
   timestamp       DateTime  @default(now())
 }
 
-
 model UserHolding {
   id          Int       @id @default(autoincrement())
   user        User      @relation(fields: [userId], references: [id])
@@ -140,4 +140,9 @@ enum OrderStatus {
 enum LiquidityActionType {
   SPLIT
   MERGE
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }

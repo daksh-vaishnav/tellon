@@ -57,3 +57,7 @@
       - Highest BUY = best bid
       - Lowest SELL = best ask
       - When they cross (bid ≥ ask), a trade is executed.
+
+## liquidity
+  - the smaller spared => the higher liquidity
+  - the wider spread  => less liquidity
