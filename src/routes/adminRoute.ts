@@ -1,5 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { generateJWT } from "../utils/jwt.js";
+import { validateSchema } from "../validator/index.js";
+import { marketCreateSchema } from "../validator/market.js";
 
 const router = Router();
 
@@ -55,20 +57,9 @@ router.get("/sign-in", (req: Request, res: Response) => {
 
 
 
-router.get("/create/market", (req: Request, res: Response) => {
-    const { username, password } = req.body
-
-    if (password != "admin@123") {
-        return res.status(400).json({ message: "invalid Password" })
-    }
-    let jwt = null;
-    try {
-        jwt = generateJWT(username)
-    } catch (error) {
-        return res.status(500).json({ message: "something went wrong!!!" })
-    }
-
-    return res.json({ token: jwt })
+router.post("/create/market", validateSchema(marketCreateSchema), (req: Request, res: Response) => {
+    const body = req.body;
+    return res.json({ body })
 
 })
 
