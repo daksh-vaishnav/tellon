@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -14,115 +14,59 @@ datasource db {
 }
 
 model User {
-  id               Int               @id @default(autoincrement())
-  role             UserRole          @default(USER)
-  username         String            @unique
-  email            String            @unique
-  password         String
-  profilePic       String?
-  balance          Float
-  orders           Orderbook[]
-  holdings         UserHolding[]
-  liquidityActions LiquidityAction[]
+  id         Int         @id @default(autoincrement())
+  role       UserRole    @default(USER)
+  username   String      @unique
+  email      String      @unique
+  password   String
+  profilePic String?
+  balance    Float
+  orders     Orderbook[]
+  createAt   DateTime    @default(now())
+  updatedAt  DateTime    @default(now()) @updatedAt
 }
 
 model Market {
-  id               Int               @id @default(autoincrement())
-  title            String
-  thumbnail        String?
-  outcomes         Outcome[]
-  orderbooks       Orderbook[]
-  trades           Trade[]
-  liquidityActions LiquidityAction[]
-  category         marketCategory[]
-  userHoldings     UserHolding[]
+  id         Int              @id @default(autoincrement())
+  title      String
+  thumbnail  String?
+  outcomes   Outcome[]
+  orderbooks Orderbook[]
+  category   marketCategory[]
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @default(now()) @updatedAt
 }
 
 model marketCategory {
   id      Int      @id @default(autoincrement())
-  name    String   @unique
+  name    String   @unique // e.g., Sports, Politics, Finance
   markets Market[]
 }
 
 model Outcome {
-  id                Int                @id @default(autoincrement())
-  market            Market             @relation(fields: [marketId], references: [id])
-  marketId          Int
-  label             String // YES/NO or any other outcome
-  initPrice         Float
-  trades            Trade[]
-  orderbooks        Orderbook[]
-  liqActionOutcomes LiqActionOutcome[]
+  id         Int         @id @default(autoincrement())
+  market     Market      @relation(fields: [marketId], references: [id])
+  marketId   Int
+  label      String? // if null then outcome may be YES/NO, if given then its be a categorical outcome
+  type       OutcomeType
+  orderbooks Orderbook[]
 }
 
 model Orderbook {
-  id           Int           @id @default(autoincrement())
-  market       Market        @relation(fields: [marketId], references: [id])
-  marketId     Int
-  outcome      Outcome       @relation(fields: [outcomeId], references: [id])
-  outcomeId    Int
-  user         User          @relation(fields: [userId], references: [id])
-  userId       Int
-  type         OrderType
-  price        Float
-  quantity     Int
-  executedQty  Int
-  status       OrderStatus
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime?
-  buyTrades    Trade[]       @relation("BuyOrder")
-  sellTrades   Trade[]       @relation("SellOrder")
-  userHoldings UserHolding[]
-}
-
-model Trade {
-  id              Int       @id @default(autoincrement())
-  market          Market    @relation(fields: [marketId], references: [id])
-  marketId        Int
-  outcome         Outcome   @relation(fields: [outcomeId], references: [id])
-  outcomeId       Int
-  buyOrderbook    Orderbook @relation("BuyOrder", fields: [buyOrderbookId], references: [id])
-  buyOrderbookId  Int
-  sellOrderbook   Orderbook @relation("SellOrder", fields: [sellOrderbookId], references: [id])
-  sellOrderbookId Int
-  price           Float
-  qty             Int
-  timestamp       DateTime  @default(now())
-}
-
-model UserHolding {
-  id          Int       @id @default(autoincrement())
-  user        User      @relation(fields: [userId], references: [id])
+  id          Int         @id @default(autoincrement())
+  user        User        @relation(fields: [userId], references: [id])
   userId      Int
-  market      Market    @relation(fields: [marketId], references: [id])
+  market      Market      @relation(fields: [marketId], references: [id])
   marketId    Int
-  orderbook   Orderbook @relation(fields: [orderbookId], references: [id])
-  orderbookId Int
-  qty         Int
+  outcome     Outcome     @relation(fields: [outcomeId], references: [id])
+  outcomeId   Int
+  type        OrderType
   price       Float
-}
-
-model LiquidityAction {
-  id                Int                 @id @default(autoincrement())
-  market            Market              @relation(fields: [marketId], references: [id])
-  marketId          Int
-  user              User                @relation(fields: [userId], references: [id])
-  userId            Int
-  action            LiquidityActionType // SPLIT or MERGE
-  amountInvested    Float
-  amountReceived    Float?
-  liqActionOutcomes LiqActionOutcome[]
-  timestamp         DateTime            @default(now())
-}
-
-model LiqActionOutcome {
-  id              Int             @id @default(autoincrement())
-  liquidityAction LiquidityAction @relation(fields: [laId], references: [id])
-  laId            Int
-  outcome         Outcome         @relation(fields: [outcomeId], references: [id])
-  outcomeId       Int
-  qty             Int
-  price           Float
+  quantity    Int
+  executedQty Int?
+  status      OrderStatus
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
 enum OrderType {
@@ -137,12 +81,12 @@ enum OrderStatus {
   CANCEL
 }
 
-enum LiquidityActionType {
-  SPLIT
-  MERGE
-}
-
 enum UserRole {
   ADMIN
   USER
+}
+
+enum OutcomeType {
+  YES
+  NO
 }

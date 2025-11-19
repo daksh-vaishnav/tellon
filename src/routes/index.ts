@@ -1,7 +1,8 @@
 
 import { Router } from 'express'
-import userRoute from './user.js'
+import authRoute from './auth.js'
 import adminRoute from "./admin.js"
+import orderbookRoute from "./orderbookRoute.js"
 
 
 const appRouters = Router();
@@ -9,9 +10,13 @@ const appRouters = Router();
 
 
 
-appRouters.use("/user", userRoute)
+appRouters.use("/auth", authRoute)
+
 appRouters.use("/admin", adminRoute)
 
+appRouters.use("/user", orderbookRoute)
+
+appRouters.use("/orderbook", orderbookRoute)
 
 
 
