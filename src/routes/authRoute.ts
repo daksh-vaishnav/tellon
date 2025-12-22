@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { generateJWT } from "../utils/jwt.js";
 
-const router = Router();
+const router: Router = Router();
 
 
 router.get("/sign-in", (req: Request, res: Response) => {

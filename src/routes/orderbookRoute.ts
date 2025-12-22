@@ -7,7 +7,7 @@ import {
     updateController
 } from "../controllers/orderbookController.js"
 
-const router = Router();
+const router: Router = Router();
 
 router.post("/", addController);
 

@@ -2,7 +2,7 @@ import { Router, type Request, type Response } from "express";
 import { getAllMarketService } from "../services/marketService.js";
 
 
-const router = Router();
+const router: Router = Router();
 
 router.get("/all", async (req: Request, res: Response) => {
     try {

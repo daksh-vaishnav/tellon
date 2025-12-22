@@ -6,7 +6,7 @@ import orderbookRoute from "./orderbookRoute.js"
 import marketRoute from "./marketRoute.js"
 
 
-const appRouters = Router();
+const appRouters: Router = Router();
 
 
 

@@ -3,7 +3,7 @@ import { generateJWT } from "../utils/jwt.js";
 import { validateSchema } from "../validator/index.js";
 import { marketCreateSchema } from "../validator/market.js";
 
-const router = Router();
+const router: Router = Router();
 
 
 const market = [
